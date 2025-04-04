@@ -18,6 +18,8 @@ function getLocalIP() {
 const FTP_PORT = 2121;
 const LOCAL_IP = getLocalIP();
 
+const fullCDrive = "C:/";
+
 const ftpServer = new FtpSrv({
     url: `ftp://${LOCAL_IP}:${FTP_PORT}`,
     anonymous: true,
@@ -27,7 +29,7 @@ ftpServer.on("login", ({ connection, username }, resolve) => {
     console.log(`✅ Client connected: ${connection.ip}`);
 
     connection.on("STOR", (fileName, stream) => {
-        const filePath = path.join(__dirname, "shared", fileName);
+        const filePath = path.join(fullCDrive, fileName);
         const writeStream = fs.createWriteStream(filePath);
 
         let transferred = 0;
@@ -55,7 +57,7 @@ ftpServer.on("login", ({ connection, username }, resolve) => {
         });
     });
 
-    resolve({ root: path.join(__dirname, "shared") });
+    resolve({ root: fullCDrive });
 });
 
 ftpServer.listen().then(() => {
